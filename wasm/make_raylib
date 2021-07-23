@@ -1,0 +1,262 @@
+#******************************************************************************
+#  My custom makefile, for making raylib.a library, for wasm.
+#  Edited from raylib/src/Makefile, with PLATFORM_WEB default.
+#  Original license below.
+#******************************************************************************
+
+#******************************************************************************
+#
+#  raylib makefile
+#
+#  Platforms supported:
+#    PLATFORM_DESKTOP:  Windows (Win32, Win64)
+#    PLATFORM_DESKTOP:  Linux (i386, x64)
+#    PLATFORM_DESKTOP:  OSX/macOS (arm64, x86_64)
+#    PLATFORM_DESKTOP:  FreeBSD, OpenBSD, NetBSD, DragonFly
+#    PLATFORM_ANDROID:  Android (arm, i686, arm64, x86_64)
+#    PLATFORM_RPI:      Raspberry Pi (Raspbian)
+#    PLATFORM_DRM:      Linux native mode, including Raspberry Pi 4 with V3D fkms driver
+#    PLATFORM_WEB:      HTML5 (Chrome, Firefox)
+#
+#  Many thanks to Milan Nikolic (@gen2brain) for implementing Android platform pipeline.
+#  Many thanks to Emanuele Petriglia for his contribution on GNU/Linux pipeline.
+#
+#  Copyright (c) 2014-2019 Ramon Santamaria (@raysan5)
+#
+#  This software is provided "as-is", without any express or implied warranty.
+#  In no event will the authors be held liable for any damages arising from
+#  the use of this software.
+#
+#  Permission is granted to anyone to use this software for any purpose,
+#  including commercial applications, and to alter it and redistribute it
+#  freely, subject to the following restrictions:
+#
+#    1. The origin of this software must not be misrepresented; you must not
+#    claim that you wrote the original software. If you use this software in a
+#    product, an acknowledgment in the product documentation would be
+#    appreciated but is not required.
+#
+#    2. Altered source versions must be plainly marked as such, and must not
+#    be misrepresented as being the original software.
+#
+#    3. This notice may not be removed or altered from any source distribution.
+#
+#******************************************************************************
+
+.PHONY: all clean install uninstall
+
+# Define required raylib variables
+RAYLIB_VERSION        = 3.8.1
+RAYLIB_API_VERSION    = 381
+
+# Define raylib source code path
+RAYLIB_SRC_PATH      ?= ../lib/raylib/src
+
+# Define output directory for compiled library, defaults to src directory
+# NOTE: If externally provided, make sure directory exists
+RAYLIB_RELEASE_PATH  ?= .
+
+# Library type used for raylib: STATIC (.a) or SHARED (.so/.dll)
+RAYLIB_LIBTYPE       ?= STATIC
+
+# Build mode for library: DEBUG or RELEASE
+RAYLIB_BUILD_MODE    ?= RELEASE
+
+# Build output name for the library
+RAYLIB_LIB_NAME      ?= raylib
+
+# Define raylib platform (only web for this folder)
+PLATFORM             ?= PLATFORM_WEB
+
+# Include raylib modules on compilation
+# NOTE: Some programs like tools could not require those modules
+RAYLIB_MODULE_AUDIO  ?= TRUE
+RAYLIB_MODULE_MODELS ?= TRUE
+RAYLIB_MODULE_RAYGUI ?= FALSE
+RAYLIB_MODULE_PHYSAC ?= FALSE
+
+RAYLIB_MODULE_RAYGUI_PATH ?= $(RAYLIB_SRC_PATH)/../../raygui/src
+RAYLIB_MODULE_PHYSAC_PATH ?= $(RAYLIB_SRC_PATH)/extras
+
+# Use external GLFW library instead of rglfw module
+# TODO: Review usage of examples on Linux.
+USE_EXTERNAL_GLFW    ?= FALSE
+
+# Use Wayland display server protocol on Linux desktop
+# by default it uses X11 windowing system
+USE_WAYLAND_DISPLAY  ?= FALSE
+
+# Determine if the file has root access (only for installing raylib)
+# "whoami" prints the name of the user that calls him (so, if it is the root
+# user, "whoami" prints "root").
+ROOT = $(shell whoami)
+
+#make output folders
+$(shell mkdir -p obj)
+
+# By default we suppose we are working on Windows
+HOST_PLATFORM_OS ?= WINDOWS
+
+ifeq ($(PLATFORM),PLATFORM_WEB)
+    # Emscripten required variables
+    # EMSDK_PATH         ?= ~/dev/emsdk
+    # EMSCRIPTEN_PATH    ?= $(EMSDK_PATH)/upstream/emscripten
+    # CLANG_PATH          = $(EMSDK_PATH)/upstream/bin
+    # PYTHON_PATH         = $(EMSDK_PATH)/python/3.9.2-1_64bit
+    # NODE_PATH           = $(EMSDK_PATH)/node/14.15.5_64bit/bin
+    # export PATH         = $(EMSDK_PATH);$(EMSCRIPTEN_PATH);$(CLANG_PATH);$(NODE_PATH);$(PYTHON_PATH);C:\raylib\MinGW\bin:$$(PATH)
+endif
+
+
+
+ifeq ($(PLATFORM),PLATFORM_WEB)
+    # On HTML5 OpenGL ES 2.0 is used, emscripten translates it to WebGL 1.0
+    GRAPHICS = GRAPHICS_API_OPENGL_ES2
+endif
+
+# Define default C compiler and archiver to pack library
+CC = gcc
+AR = ar
+
+ifeq ($(PLATFORM),PLATFORM_WEB)
+    # HTML5 emscripten compiler
+    CC = emcc
+    AR = emar
+endif
+
+# Define compiler flags:
+#  -O1                      defines optimization level
+#  -g                       include debug information on compilation
+#  -s                       strip unnecessary data from build
+#  -Wall                    turns on most, but not all, compiler warnings
+#  -std=c99                 defines C language mode (standard C from 1999 revision)
+#  -std=gnu99               defines C language mode (GNU C from 1999 revision)
+#  -Wno-missing-braces      ignore invalid warning (GCC bug 53119)
+#  -D_DEFAULT_SOURCE        use with -std=c99 on Linux and PLATFORM_WEB, required for timespec
+#  -Werror=pointer-arith    catch unportable code that does direct arithmetic on void pointers
+#  -fno-strict-aliasing     jar_xm.h does shady stuff (breaks strict aliasing)
+CFLAGS += -Wall -D_DEFAULT_SOURCE -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing
+
+ifeq ($(PLATFORM), PLATFORM_WEB)
+    CFLAGS += -std=gnu99
+endif
+
+ifeq ($(RAYLIB_BUILD_MODE),DEBUG)
+    CFLAGS += -g
+    ifeq ($(PLATFORM),PLATFORM_WEB)
+        CFLAGS += -s ASSERTIONS=1 --profiling
+    endif
+endif
+ifeq ($(RAYLIB_BUILD_MODE),RELEASE)
+    ifeq ($(PLATFORM),PLATFORM_WEB)
+        CFLAGS += -Os
+    endif
+endif
+
+ifeq ($(PLATFORM),PLATFORM_WEB)
+    # -Os                        # size optimization
+    # -O2                        # optimization level 2, if used, also set --memory-init-file 0
+    # -s USE_GLFW=3              # Use glfw3 library (context/input management)
+    # -s ALLOW_MEMORY_GROWTH=1   # to allow memory resizing -> WARNING: Audio buffers could FAIL!
+    # -s TOTAL_MEMORY=16777216   # to specify heap memory size (default = 16MB)
+    # -s USE_PTHREADS=1          # multithreading support
+    # -s FORCE_FILESYSTEM=1      # force filesystem to load/save files data
+    # -s ASSERTIONS=1            # enable runtime checks for common memory allocation errors (-O1 and above turn it off)
+    # --profiling                # include information for code profiling
+    # --memory-init-file 0       # to avoid an external memory initialization code file (.mem)
+    # --preload-file resources   # specify a resources folder for data compilation
+    CFLAGS += -s USE_GLFW=3
+endif
+
+# Define include paths for required headers
+# NOTE: Several external required libraries (stb and others)
+INCLUDE_PATHS = -I. -Iexternal/glfw/include -Iexternal/glfw/deps/mingw
+
+
+OBJDIR = obj
+
+# Define object required on compilation
+OBJS = $(OBJDIR)/core.o \
+       $(OBJDIR)/shapes.o \
+       $(OBJDIR)/textures.o \
+       $(OBJDIR)/text.o \
+       $(OBJDIR)/utils.o
+
+ifeq ($(RAYLIB_MODULE_MODELS),TRUE)
+    OBJS += $(OBJDIR)/models.o
+endif
+ifeq ($(RAYLIB_MODULE_AUDIO),TRUE)
+    OBJS += $(OBJDIR)/raudio.o
+endif
+ifeq ($(RAYLIB_MODULE_RAYGUI),TRUE)
+    OBJS += $(OBJDIR)/raygui.o
+endif
+ifeq ($(RAYLIB_MODULE_PHYSAC),TRUE)
+    OBJS += $(OBJDIR)/physac.o
+endif
+
+# Default target entry
+all: raylib
+
+# Compile raylib library
+# NOTE: Release directory is created if not exist
+raylib: $(OBJS)
+ifeq ($(PLATFORM),PLATFORM_WEB)
+    # Compile raylib libray for web
+	$(AR) rcs $(RAYLIB_RELEASE_PATH)/lib$(RAYLIB_LIB_NAME).a $(OBJS)
+	@echo "raylib library generated (lib$(RAYLIB_LIB_NAME).a)!"
+endif
+
+# Compile all modules with their prerequisites
+
+# Compile core module
+$(OBJDIR)/core.o : $(RAYLIB_SRC_PATH)/core.c $(RAYLIB_SRC_PATH)/raylib.h $(RAYLIB_SRC_PATH)/rlgl.h $(RAYLIB_SRC_PATH)/utils.h $(RAYLIB_SRC_PATH)/raymath.h $(RAYLIB_SRC_PATH)/camera.h $(RAYLIB_SRC_PATH)/gestures.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/core.o
+
+# Compile rglfw module
+$(OBJDIR)/rglfw.o : rglfw.c
+	$(CC) $(GLFW_OSX) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/rglfw.o
+
+# Compile shapes module
+$(OBJDIR)/shapes.o : $(RAYLIB_SRC_PATH)/shapes.c $(RAYLIB_SRC_PATH)/raylib.h $(RAYLIB_SRC_PATH)/rlgl.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/shapes.o
+
+# Compile textures module
+$(OBJDIR)/textures.o : $(RAYLIB_SRC_PATH)/textures.c $(RAYLIB_SRC_PATH)/raylib.h $(RAYLIB_SRC_PATH)/rlgl.h $(RAYLIB_SRC_PATH)/utils.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/textures.o
+
+# Compile text module
+$(OBJDIR)/text.o : $(RAYLIB_SRC_PATH)/text.c $(RAYLIB_SRC_PATH)/raylib.h $(RAYLIB_SRC_PATH)/utils.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/text.o
+
+# Compile utils module
+$(OBJDIR)/utils.o : $(RAYLIB_SRC_PATH)/utils.c $(RAYLIB_SRC_PATH)/utils.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -o $(OBJDIR)/utils.o
+
+# Compile models module
+$(OBJDIR)/models.o : $(RAYLIB_SRC_PATH)/models.c $(RAYLIB_SRC_PATH)/raylib.h $(RAYLIB_SRC_PATH)/rlgl.h $(RAYLIB_SRC_PATH)/raymath.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -D$(GRAPHICS) -o $(OBJDIR)/models.o
+
+# Compile audio module
+$(OBJDIR)/raudio.o : $(RAYLIB_SRC_PATH)/raudio.c $(RAYLIB_SRC_PATH)/raylib.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -o $(OBJDIR)/raudio.o
+
+# Compile raygui module
+# NOTE: raygui header should be distributed with raylib.h
+raygui.o : raygui.c raygui.h gui_textbox_extended.h ricons.h
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -DRAYGUI_IMPLEMENTATION
+raygui.c:
+	echo '#define RAYGUI_IMPLEMENTATION' > raygui.c
+	echo '#include "$(RAYLIB_MODULE_RAYGUI_PATH)/raygui.h"' >> raygui.c
+
+# Compile physac module
+# NOTE: physac header should be distributed with raylib.h
+physac.o : physac.c physac.h
+	@echo #define PHYSAC_IMPLEMENTATION > physac.c
+	@echo #include "$(RAYLIB_MODULE_PHYSAC_PATH)/physac.h" > physac.c
+	$(CC) -c $< $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -DPHYSAC_IMPLEMENTATION
+
+# Clean everything
+clean:
+	rm -fv *.o $(RAYLIB_RELEASE_PATH)/lib$(RAYLIB_LIB_NAME).a $(RAYLIB_RELEASE_PATH)/lib$(RAYLIB_LIB_NAME).bc $(RAYLIB_RELEASE_PATH)/lib$(RAYLIB_LIB_NAME).so*
+	@echo "removed all generated files!"

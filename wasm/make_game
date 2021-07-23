@@ -1,0 +1,80 @@
+#******************************************************************************
+#  My custom makefile, for making wasm build.
+#  Original license below.
+#******************************************************************************
+
+#**************************************************************************************************
+#
+#   raylib makefile for Desktop platforms, Raspberry Pi, Android and HTML5
+#
+#   Copyright (c) 2013-2021 Ramon Santamaria (@raysan5)
+#
+#   This software is provided "as-is", without any express or implied warranty. In no event
+#   will the authors be held liable for any damages arising from the use of this software.
+#
+#   Permission is granted to anyone to use this software for any purpose, including commercial
+#   applications, and to alter it and redistribute it freely, subject to the following restrictions:
+#
+#     1. The origin of this software must not be misrepresented; you must not claim that you
+#     wrote the original software. If you use this software in a product, an acknowledgment
+#     in the product documentation would be appreciated but is not required.
+#
+#     2. Altered source versions must be plainly marked as such, and must not be misrepresented
+#     as being the original software.
+#
+#     3. This notice may not be removed or altered from any source distribution.
+#
+#**************************************************************************************************
+
+.PHONY: all
+
+# Define required raylib variables
+PROJECT_NAME  ?= game
+RAYLIB_PATH   ?= ../lib/raylib
+GAME_SRC      ?= ../src
+CC = emcc
+
+# Build mode for project: DEBUG or RELEASE
+BUILD_MODE            ?= RELEASE
+
+#make output folders
+$(shell mkdir -p obj)
+$(shell mkdir -p build)
+
+
+# Define compiler flags:
+#  -O1                  defines optimization level
+#  -g                   include debug information on compilation
+#  -s                   strip unnecessary data from build
+#  -Wall                turns on most, but not all, compiler warnings
+#  -std=c99             defines C language mode (standard C from 1999 revision)
+#  -std=gnu99           defines C language mode (GNU C from 1999 revision)
+#  -Wno-missing-braces  ignore invalid warning (GCC bug 53119)
+#  -D_DEFAULT_SOURCE    use with -std=c99 on Linux and PLATFORM_WEB, required for timespec
+CFLAGS += -Wall -std=c99 -D_DEFAULT_SOURCE -Wno-missing-braces
+
+ifeq ($(BUILD_MODE),DEBUG)
+    CFLAGS += -g
+    CFLAGS += -s ASSERTIONS=1 --profiling
+else
+    CFLAGS += -Os
+endif
+
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYLIB_PATH)/src/external
+LDFLAGS = -L. -L$(RAYLIB_PATH)/src
+LDLIBS = libraylib.a
+
+# game objs
+OBJS =  obj/main.o
+
+# Default target entry
+all: $(PROJECT_NAME)
+
+BUILD_CFLAGS = $(CFLAGS) -s USE_GLFW=3 -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 
+BUILD_CFLAGS += --shell-file $(RAYLIB_PATH)/src/shell.html
+$(PROJECT_NAME): $(OBJS)
+	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
+
+# game sources
+obj/main.o: $(GAME_SRC)/main.c
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB

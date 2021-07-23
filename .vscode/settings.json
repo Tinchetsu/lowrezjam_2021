@@ -1,0 +1,27 @@
+{
+    "files.associations": {
+        "*.lua": "lua",
+        "raylib.h": "c",
+        "make_game": "Makefile",
+        "make_raylib": "Makefile"
+    },
+    "actionButtons": {
+        "defaultColor": "lightgreen",
+        "loadNpmCommands":false,
+        "reloadButton":"⟳",
+        "commands": [
+            {
+                "cwd": "${workspaceFolder}/wasm",
+                "name": "Make raylib.a",
+                "color": "lightgreen",
+                "command": "make -f make_raylib -B",
+            },
+            {
+                "cwd": "${workspaceFolder}/wasm",
+                "name": "Make game wasm",
+                "color": "lightgreen",
+                "command": "make -f make_game",
+            }
+        ]
+    }
+}
