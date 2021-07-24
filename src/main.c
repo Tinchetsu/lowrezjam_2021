@@ -24,8 +24,8 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-int screenWidth = 800;
-int screenHeight = 450;
+int screenWidth = 64;
+int screenHeight = 64;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -75,10 +75,8 @@ void UpdateDrawFrame(void)
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
-
         ClearBackground(RAYWHITE);
-
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        DrawText("64x64\nTesting", 0, 0, 10, LIGHTGRAY);
 
     EndDrawing();
     //----------------------------------------------------------------------------------
