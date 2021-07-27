@@ -26,6 +26,8 @@
 //----------------------------------------------------------------------------------
 int screenWidth = 64;
 int screenHeight = 64;
+Texture2D texture;
+Font font;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -40,6 +42,14 @@ int main()
     // Initialization
     //--------------------------------------------------------------------------------------
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+
+    //tic-80-wide-font.ttf
+    
+    texture = LoadTexture("resources/tiles.png");
+    font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
+
+    Image image = LoadImageFromTexture(font.texture);
+    ExportImage(image, "image.png");
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -72,11 +82,17 @@ void UpdateDrawFrame(void)
     // TODO: Update your variables here
     //----------------------------------------------------------------------------------
 
+    Vector2 fontPosition = { 0.0f, 0.0f };
+
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("64x64\nTesting", 0, 0, 10, LIGHTGRAY);
+        ClearBackground(BLACK);
+        //DrawTexture(texture, 0, 0, WHITE);
+        //DrawText("64x64 asdf", 1, 1, 10, GRAY);
+        DrawTextEx(font, "abcdefghi\njklmnoprst\nuvwxyz\n1234567890", fontPosition,6, 0.0f, WHITE);
+        
+        DrawTexture(font.texture, 0, 50, WHITE);
 
     EndDrawing();
     //----------------------------------------------------------------------------------
