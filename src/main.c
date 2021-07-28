@@ -82,18 +82,18 @@ void UpdateDrawFrame(void)
     // TODO: Update your variables here
     //----------------------------------------------------------------------------------
 
-    Vector2 fontPosition = { 0.0f, 0.0f };
-
     // Draw
     //----------------------------------------------------------------------------------
     BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(GRAY);
         //DrawTexture(texture, 0, 0, WHITE);
         //DrawText("64x64 asdf", 1, 1, 10, GRAY);
-        DrawTextEx(font, "abcdefghi\njklmnoprst\nuvwxyz\n1234567890", fontPosition,6, 0.0f, WHITE);
+        //DrawTextEx(font, "abcdefghi\njklmnoprst\nuvwxyz\n1234567890", fontPosition,6, 0.0f, WHITE);
+        DrawTextEx(font, "abcdefghi ", (Vector2){ 0.f, 0.f }, 6.f, 0.f, WHITE);
+        DrawTextEx(font, "jklmnoprs ", (Vector2){ 0.f, 7.f }, 6.f, 0.f, WHITE);
+        DrawTextEx(font, "tuvwxyz   ", (Vector2){ 0.f, 14.f}, 6.f, 0.f, WHITE);
+        DrawTextEx(font, "1234567890", (Vector2){ 0.f, 21.f}, 6.f, 0.f, WHITE);
         
-        DrawTexture(font.texture, 0, 50, WHITE);
-
     EndDrawing();
     //----------------------------------------------------------------------------------
 }

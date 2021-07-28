@@ -71,7 +71,7 @@ OBJS =  obj/main.o
 all: $(PROJECT_NAME)
 
 BUILD_CFLAGS = $(CFLAGS) -s USE_GLFW=3 -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 
-BUILD_CFLAGS += --shell-file template.html --preload-file ../resources
+BUILD_CFLAGS += --shell-file template.html --preload-file ../assets/resources@/resources
 $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
