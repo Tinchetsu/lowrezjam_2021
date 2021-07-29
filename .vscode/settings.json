@@ -11,6 +11,12 @@
         "reloadButton":"⟳",
         "commands": [
             {
+                "cwd": "${workspaceFolder}/assets/working",
+                "name": "export map",
+                "color": "lightgreen",
+                "command": "python exportMap.py",
+            },
+            {
                 "cwd": "${workspaceFolder}/wasm",
                 "name": "Make raylib.a",
                 "color": "lightgreen",
