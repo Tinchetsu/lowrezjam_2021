@@ -14,7 +14,7 @@
 ********************************************************************************************/
 
 #include "raylib.h"
-
+#include "map.h"
 //#define PLATFORM_WEB
 
 #if defined(PLATFORM_WEB)
@@ -24,10 +24,11 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-int screenWidth = 64;
-int screenHeight = 64;
+int screenWidth = 128;
+int screenHeight = 128;
 Texture2D texture;
 Font font;
+Map map;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -50,6 +51,8 @@ int main()
 
     Image image = LoadImageFromTexture(font.texture);
     ExportImage(image, "image.png");
+
+    map = loadMap("resources/map");
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -86,14 +89,8 @@ void UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     BeginDrawing();
         ClearBackground(GRAY);
-        //DrawTexture(texture, 0, 0, WHITE);
-        //DrawText("64x64 asdf", 1, 1, 10, GRAY);
-        //DrawTextEx(font, "abcdefghi\njklmnoprst\nuvwxyz\n1234567890", fontPosition,6, 0.0f, WHITE);
+        drawMap(map, 0, 0, 1);
         DrawTextEx(font, "abcdefghi ", (Vector2){ 0.f, 0.f }, 6.f, 0.f, WHITE);
-        DrawTextEx(font, "jklmnoprs ", (Vector2){ 0.f, 7.f }, 6.f, 0.f, WHITE);
-        DrawTextEx(font, "tuvwxyz   ", (Vector2){ 0.f, 14.f}, 6.f, 0.f, WHITE);
-        DrawTextEx(font, "1234567890", (Vector2){ 0.f, 21.f}, 6.f, 0.f, WHITE);
         
     EndDrawing();
-    //----------------------------------------------------------------------------------
 }

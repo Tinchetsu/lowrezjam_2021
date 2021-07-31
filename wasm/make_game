@@ -65,7 +65,9 @@ LDFLAGS = -L. -L$(RAYLIB_PATH)/src
 LDLIBS = libraylib.a
 
 # game objs
-OBJS =  obj/main.o
+OBJS =  obj/main.o \
+        obj/map.o \
+
 
 # Default target entry
 all: $(PROJECT_NAME)
@@ -76,5 +78,8 @@ $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
 # game sources
-obj/main.o: $(GAME_SRC)/main.c
+obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/map.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/map.o: $(GAME_SRC)/map.c $(GAME_SRC)/map.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
