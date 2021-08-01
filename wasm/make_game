@@ -66,7 +66,7 @@ LDLIBS = libraylib.a
 
 # game objs
 OBJS =  obj/main.o \
-        obj/map.o \
+        obj/engine.o \
 
 
 # Default target entry
@@ -78,8 +78,8 @@ $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
 # game sources
-obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/map.h
+obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
-obj/map.o: $(GAME_SRC)/map.c $(GAME_SRC)/map.h
+obj/engine.o: $(GAME_SRC)/engine.c $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB

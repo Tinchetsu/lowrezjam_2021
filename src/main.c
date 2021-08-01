@@ -14,7 +14,7 @@
 ********************************************************************************************/
 
 #include "raylib.h"
-#include "map.h"
+#include "engine.h"
 //#define PLATFORM_WEB
 
 #if defined(PLATFORM_WEB)
@@ -24,11 +24,11 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition
 //----------------------------------------------------------------------------------
-int screenWidth = 128;
-int screenHeight = 128;
+int screenWidth = 64;
+int screenHeight = 64;
 Texture2D texture;
 Font font;
-Map map;
+Map* map;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -52,7 +52,7 @@ int main()
     Image image = LoadImageFromTexture(font.texture);
     ExportImage(image, "image.png");
 
-    map = loadMap("resources/map");
+    map = loadMap("resources/map", LoadTexture("resources/tiles.png"));
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -89,7 +89,7 @@ void UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     BeginDrawing();
         ClearBackground(GRAY);
-        drawMap(map, 0, 0, 1);
+        drawMap(map, 0, 0);
         DrawTextEx(font, "abcdefghi ", (Vector2){ 0.f, 0.f }, 6.f, 0.f, WHITE);
         
     EndDrawing();
