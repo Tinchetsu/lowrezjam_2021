@@ -2,6 +2,12 @@
 #include <stdlib.h> 
 #include "engine.h"
 
+static App app = {0};
+
+App* getApp() {
+    return &app;
+}
+
 Map* loadMap(const char* fileName, Texture2D texture) {
     Map *map = (Map*) malloc(sizeof(Map));
     FILE *fp;

@@ -9,6 +9,18 @@
 #include <stdint.h>
 #include "raylib.h"
 
+// The game app. Here I hook update and draw functions
+
+typedef struct App {
+    int     screenWidth;
+    int     screenHeight;
+    void*   pUserData;      //for storing custom stuff
+    void    (*update)();
+    void    (*draw)();
+} App;
+
+App* getApp();
+
 // Tile map
 
 typedef struct Map {

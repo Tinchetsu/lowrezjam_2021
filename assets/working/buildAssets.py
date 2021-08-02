@@ -25,7 +25,7 @@ def exportMap():
     layer = root.find("layer")
     tileset = root.find("tileset")
     
-    if layer and tileset:
+    if layer is not None and tileset is not None:
         out = open(outFile, "wb")
         
         #write map width/heoght
