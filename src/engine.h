@@ -10,10 +10,13 @@
 #include "raylib.h"
 
 // The game app. Here I hook update and draw functions
+// Also contains common data
 
 typedef struct App {
-    int     screenWidth;
-    int     screenHeight;
+    int     width;
+    int     height;
+    int     cameraX;
+    int     cameraY;
     void*   pUserData;      //for storing custom stuff
     void    (*update)();
     void    (*draw)();
