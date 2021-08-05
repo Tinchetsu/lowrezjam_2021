@@ -8,7 +8,7 @@
     "actionButtons": {
         "defaultColor": "lightgreen",
         "loadNpmCommands":false,
-        "reloadButton":"⟳",
+        "reloadButton":"$(refresh)",
         "commands": [
             {
                 "cwd": "${workspaceFolder}/assets/working",
