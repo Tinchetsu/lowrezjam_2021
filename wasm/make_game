@@ -67,19 +67,25 @@ LDLIBS = libraylib.a
 # game objs
 OBJS =  obj/main.o \
         obj/engine.o \
+        obj/game.o \
 
 
 # Default target entry
 all: $(PROJECT_NAME)
 
 BUILD_CFLAGS = $(CFLAGS) -s USE_GLFW=3 -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 
-BUILD_CFLAGS += --shell-file template.html --preload-file ../assets/resources@/resources
+BUILD_CFLAGS += --shell-file template.html 
+#BUILD_CFLAGS += --shell-file $(RAYLIB_PATH)/src/shell.html
+BUILD_CFLAGS += --preload-file ../assets/resources@/resources
 $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
 # game sources
-obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h
+obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h $(GAME_SRC)/game.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/engine.o: $(GAME_SRC)/engine.c $(GAME_SRC)/engine.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/game.o: $(GAME_SRC)/game.c $(GAME_SRC)/game.h $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB

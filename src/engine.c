@@ -8,6 +8,11 @@ App* getApp() {
     return &app;
 }
 
+void camera(int x, int y) {
+    getApp()->cameraX = x;
+    getApp()->cameraY = y;
+}
+
 Map* loadMap(const char* fileName, Texture2D texture) {
     Map *map = (Map*) malloc(sizeof(Map));
     FILE *fp;
@@ -33,13 +38,15 @@ void freeMap(Map *map) {
 
 void drawMap(const Map *map, int x, int y) {
     int tile;
+    int map_x = x + getApp()->cameraX;
+    int map_y = y + getApp()->cameraY;
     for (int j = 0; j < map->height; j++ ) {
         for (int i = 0; i < map->width; i++ ) {
             tile = *((uint16_t*) map->tiles + (j*map->width + i)) - 1;
             if(tile>=0) {
                 uint16_t offsetx = (tile*map->tileW) % map->imageW;
                 uint16_t offsety = (tile / (map->imageH / map->tileH)) * map->tileH;
-                DrawTextureRec(map->texture, (Rectangle){offsetx, offsety, map->tileW, map->tileH}, (Vector2){i*8 + x, j*8 + y}, WHITE);
+                DrawTextureRec(map->texture, (Rectangle){offsetx, offsety, map->tileW, map->tileH}, (Vector2){i*8 + map_x, j*8 + map_y}, WHITE);
             }
         }
     }

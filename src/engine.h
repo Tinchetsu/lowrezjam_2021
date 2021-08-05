@@ -24,6 +24,8 @@ typedef struct App {
 
 App* getApp();
 
+void camera(int x, int y);
+
 // Tile map
 
 typedef struct Map {
