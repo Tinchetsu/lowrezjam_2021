@@ -84,6 +84,7 @@
         image-rendering:-webkit-crisp-edges;
         image-rendering:pixelated;
         image-rendering:crisp-edges;
+        outline: 0;
       }
       
     </style>
@@ -120,6 +121,7 @@
 
           canvas.style.width = width + 'px';
           canvas.style.height = height + 'px';
+          window.focus();
         };
     </script>
     <script type='text/javascript'>
@@ -144,6 +146,13 @@
                 // To make your application robust, you may want to override this behavior before shipping!
                 // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
                 canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+                window.addEventListener("keydown", function(event) {
+                  if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+                    event.preventDefault();
+                  }
+                }, false);
+
                 window.addEventListener('resize', resizeCanvas, false);
                 document.addEventListener('fullscreenchange', (event) => {
                   //if (!document.fullscreenElement) {
