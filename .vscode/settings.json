@@ -14,19 +14,31 @@
                 "cwd": "${workspaceFolder}/assets/working",
                 "name": "export map",
                 "color": "lightgreen",
-                "command": "python buildAssets.py",
+                "command": "python buildAssets.py"
+            },
+            {
+                "cwd": "${workspaceFolder}/wasm/build",
+                "name": "zip",
+                "color": "lightgreen",
+                "command": "7z a game.zip game.data game.html game.js game.wasm && 7z rn game.zip game.html index.html"
             },
             {
                 "cwd": "${workspaceFolder}/wasm",
-                "name": "Make raylib.a",
+                "name": "Rebuild raylib",
                 "color": "lightgreen",
-                "command": "make -f make_raylib -B",
+                "command": "make -f make_raylib -B"
             },
             {
                 "cwd": "${workspaceFolder}/wasm",
-                "name": "Make game wasm",
+                "name": "Rebuild game",
                 "color": "lightgreen",
-                "command": "make -f make_game",
+                "command": "make -f make_game -B"
+            },
+            {
+                "cwd": "${workspaceFolder}/wasm",
+                "name": "Make game",
+                "color": "lightgreen",
+                "command": "make -f make_game"
             }
         ]
     }

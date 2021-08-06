@@ -4,39 +4,58 @@
 Texture2D texture;
 Font font;
 Map* map;
-extern App *app;
+static GameData gameData;
+static App *app;
 
 float camx=0;
 float camy=0;
 float speed = 0.5f;
 
+
+void updateInputs() {
+    gameData.up = IsKeyDown(KEY_UP);
+    gameData.down = IsKeyDown(KEY_DOWN);
+    gameData.left = IsKeyDown(KEY_LEFT);
+    gameData.right = IsKeyDown(KEY_RIGHT);
+    
+    if (IsGamepadAvailable(0)) {
+        gameData.up = gameData.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
+        gameData.down = gameData.down || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+        gameData.left = gameData.left || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+        gameData.right = gameData.right || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+    }
+}
+
 void updateGame() {
-    if(IsKeyDown(KEY_LEFT)) {
+
+    updateInputs();
+
+    if(gameData.left) {
         camx-=speed;
     }
-    if(IsKeyDown(KEY_RIGHT)) {
+    if(gameData.right) {
         camx+=speed;
     }
-    if(IsKeyDown(KEY_UP)) {
+    if(gameData.up) {
         camy-=speed;
     }
-    if(IsKeyDown(KEY_DOWN)) {
+    if(gameData.down) {
         camy+=speed;
     }
     
-    camera((int)camx, camy);
+    camera(camx, camy);
 }
 
 void drawGame() {
     BeginDrawing();
     ClearBackground(GRAY);
-    drawMap(map, 0, 0);
-    DrawTextEx(font, "abcdefghi ", (Vector2){ 0.f, 0.f }, 6.f, 0.f, WHITE);    
-    EndDrawing();   
+    drawMap(map, 0, 0, 0, 0, map->width, map->height);
+    EndDrawing();
 }
 
 void initGame() {
     app = getApp();
+    app->pUserData = (void*) &gameData;
     app->update = updateGame;
     app->draw = drawGame;
     texture = LoadTexture("resources/tiles.png");

@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h> 
+#include <math.h>
 #include "engine.h"
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define CLAMP(x, lower, upper) (MIN((upper), MAX((x), (lower))))
 
 static App app = {0};
 
@@ -36,18 +41,34 @@ void freeMap(Map *map) {
     free(map);
 }
 
-void drawMap(const Map *map, int x, int y) {
+void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     int tile;
-    int map_x = x + getApp()->cameraX;
-    int map_y = y + getApp()->cameraY;
+    int _x = x + getApp()->cameraX;
+    int _y = y + getApp()->cameraY;
+    sx = CLAMP(sx, 0, map->width);
+    sy = CLAMP(sy, 0, map->height);
+
+    int ex = sx + w;
+    int ey = sy + h;
+    ex = CLAMP(ex, 0, map->width);
+    ey = CLAMP(ey, 0, map->height);
+    
     for (int j = 0; j < map->height; j++ ) {
-        for (int i = 0; i < map->width; i++ ) {
+        for (int i = sx; i < ex; i++ ) {
             tile = *((uint16_t*) map->tiles + (j*map->width + i)) - 1;
             if(tile>=0) {
                 uint16_t offsetx = (tile*map->tileW) % map->imageW;
                 uint16_t offsety = (tile / (map->imageH / map->tileH)) * map->tileH;
-                DrawTextureRec(map->texture, (Rectangle){offsetx, offsety, map->tileW, map->tileH}, (Vector2){i*8 + map_x, j*8 + map_y}, WHITE);
+                DrawTextureRec(map->texture, (Rectangle){offsetx, offsety, map->tileW, map->tileH}, (Vector2){i*8-_x, j*8-_y}, WHITE);
             }
         }
     }
+    /*
+    char buffer1[255];
+    char buffer2[255];
+    sprintf(buffer1, "%d,%d\n%d,%d", app.cameraX, app.cameraY, _x, _y);
+    sprintf(buffer2, "%d,%d\n%d,%d\n%d,%d", sx,sy, ex,ey,map->width,map->height);
+    DrawText(buffer1,0,0,0,BLUE);
+    DrawText(buffer2,38,0,0,YELLOW);
+    */
 }

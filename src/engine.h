@@ -41,6 +41,6 @@ typedef struct Map {
 
 Map* loadMap(const char* fileName, Texture2D texture);
 void freeMap(Map *map);
-void drawMap(const Map *map, int x, int y);
+void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h);
 
 #endif

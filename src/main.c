@@ -8,7 +8,7 @@
 
 int screenWidth = 64;
 int screenHeight = 64;
-App* app = 0;
+static App* app = 0;
 
 void UpdateDrawFrame(void);     // Update and Draw one frame
 
