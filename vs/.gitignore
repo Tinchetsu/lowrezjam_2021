@@ -4,3 +4,4 @@ bin
 build
 Game/obj
 Game/Game.vcxproj.user
+resources
