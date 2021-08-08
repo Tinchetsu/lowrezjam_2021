@@ -1,0 +1,6 @@
+premake5.exe
+.vs
+bin
+build
+Game/obj
+Game/Game.vcxproj.user
