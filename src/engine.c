@@ -7,15 +7,10 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define CLAMP(x, lower, upper) (MIN((upper), MAX((x), (lower))))
 
-static App app = {0};
+static Vector2 _camera;
 
-App* getApp() {
-    return &app;
-}
-
-void camera(int x, int y) {
-    getApp()->cameraX = x;
-    getApp()->cameraY = y;
+Vector2 *getCamera() {
+    return &_camera;
 }
 
 Map* loadMap(const char* fileName, Texture2D texture) {
@@ -43,8 +38,8 @@ void freeMap(Map *map) {
 
 void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     int tile;
-    int _x = x + getApp()->cameraX;
-    int _y = y + getApp()->cameraY;
+    int _x = x + _camera.x;
+    int _y = y + _camera.y;
     sx = CLAMP(sx, 0, map->width);
     sy = CLAMP(sy, 0, map->height);
 
@@ -66,7 +61,7 @@ void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     /*
     char buffer1[255];
     char buffer2[255];
-    sprintf(buffer1, "%d,%d\n%d,%d", app.cameraX, app.cameraY, _x, _y);
+    sprintf(buffer1, "%d,%d\n%d,%d", _camera.x, _camera.y, _x, _y);
     sprintf(buffer2, "%d,%d\n%d,%d\n%d,%d", sx,sy, ex,ey,map->width,map->height);
     DrawText(buffer1,0,0,0,BLUE);
     DrawText(buffer2,38,0,0,YELLOW);

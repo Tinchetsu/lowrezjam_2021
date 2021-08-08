@@ -1,68 +1,60 @@
 #include "game.h"
 #include "engine.h"
 
-Texture2D texture;
-Font font;
-Map* map;
-static GameData gameData;
-static App *app;
+static Game game;
+static Font font;
+static Map* map;
+static Vector2* camera;
 
-float camx=0;
-float camy=0;
 float speed = 0.5f;
 
 
-void updateInputs() {
-    gameData.up = IsKeyDown(KEY_UP);
-    gameData.down = IsKeyDown(KEY_DOWN);
-    gameData.left = IsKeyDown(KEY_LEFT);
-    gameData.right = IsKeyDown(KEY_RIGHT);
+void handleInputs() {
+    game.up = IsKeyDown(KEY_UP);
+    game.down = IsKeyDown(KEY_DOWN);
+    game.left = IsKeyDown(KEY_LEFT);
+    game.right = IsKeyDown(KEY_RIGHT);
     
     if (IsGamepadAvailable(0)) {
-        gameData.up = gameData.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
-        gameData.down = gameData.down || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
-        gameData.left = gameData.left || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
-        gameData.right = gameData.right || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+        game.up = game.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
+        game.down = game.down || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+        game.left = game.left || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+        game.right = game.right || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
     }
 }
 
 void updateGame() {
 
-    updateInputs();
+    handleInputs();
 
-    if(gameData.left) {
-        camx-=speed;
+    if(game.left) {
+        camera->x-=speed;
     }
-    if(gameData.right) {
-        camx+=speed;
+    if(game.right) {
+        camera->x+=speed;
     }
-    if(gameData.up) {
-        camy-=speed;
+    if(game.up) {
+        camera->y-=speed;
     }
-    if(gameData.down) {
-        camy+=speed;
+    if(game.down) {
+        camera->y+=speed;
     }
-    
-    camera(camx, camy);
 }
 
 void drawGame() {
-    BeginDrawing();
     ClearBackground(GRAY);
     drawMap(map, 0, 0, 0, 0, map->width, map->height);
-    EndDrawing();
+    
 }
 
-void initGame() {
-    app = getApp();
-    app->pUserData = (void*) &gameData;
-    app->update = updateGame;
-    app->draw = drawGame;
-    texture = LoadTexture("resources/tiles.png");
+Game* initGame() {
+    game.width = 64;
+    game.height = 64;
+    game.update = updateGame;
+    game.draw = drawGame;
+    camera = getCamera();
     font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
 
-    Image image = LoadImageFromTexture(font.texture);
-    ExportImage(image, "image.png");
-
     map = loadMap("resources/map", LoadTexture("resources/tiles.png"));
+    return &game;
 }

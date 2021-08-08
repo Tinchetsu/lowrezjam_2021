@@ -9,22 +9,7 @@
 #include <stdint.h>
 #include "raylib.h"
 
-// The game app. Here I hook update and draw functions
-// Also contains common data
-
-typedef struct App {
-    int     width;
-    int     height;
-    int     cameraX;
-    int     cameraY;
-    void*   pUserData;      //for storing custom stuff
-    void    (*update)();
-    void    (*draw)();
-} App;
-
-App* getApp();
-
-void camera(int x, int y);
+Vector2 *getCamera();
 
 // Tile map
 
