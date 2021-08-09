@@ -7,10 +7,10 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define CLAMP(x, lower, upper) (MIN((upper), MAX((x), (lower))))
 
-static Vector2 _camera;
+static Vector2 camera;
 
 Vector2 *getCamera() {
-    return &_camera;
+    return &camera;
 }
 
 Map* loadMap(const char* fileName, Texture2D texture) {
@@ -38,8 +38,8 @@ void freeMap(Map *map) {
 
 void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     int tile;
-    int _x = x + _camera.x;
-    int _y = y + _camera.y;
+    int _x = x + camera.x;
+    int _y = y + camera.y;
     sx = CLAMP(sx, 0, map->width);
     sy = CLAMP(sy, 0, map->height);
 
@@ -61,9 +61,17 @@ void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     /*
     char buffer1[255];
     char buffer2[255];
-    sprintf(buffer1, "%d,%d\n%d,%d", _camera.x, _camera.y, _x, _y);
+    sprintf(buffer1, "%d,%d\n%d,%d", camera.x, camera.y, _x, _y);
     sprintf(buffer2, "%d,%d\n%d,%d\n%d,%d", sx,sy, ex,ey,map->width,map->height);
     DrawText(buffer1,0,0,0,BLUE);
     DrawText(buffer2,38,0,0,YELLOW);
     */
+}
+
+int getMapTile(const Map* map, int x, int y) {
+    int tile = -1; //invalid tile
+    if (x >= 0 && x < map->width && y >= 0 && y < map->height) {
+        tile = (int)map->tiles[x + y * map->width] - 1;
+    }
+    return tile;
 }
