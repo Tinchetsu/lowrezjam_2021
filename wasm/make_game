@@ -68,6 +68,7 @@ LDLIBS = libraylib.a
 OBJS =  obj/main.o \
         obj/engine.o \
         obj/game.o \
+        obj/player.o \
 
 
 # Default target entry
@@ -88,4 +89,7 @@ obj/engine.o: $(GAME_SRC)/engine.c $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/game.o: $(GAME_SRC)/game.c $(GAME_SRC)/game.h $(GAME_SRC)/engine.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/player.o: $(GAME_SRC)/player.c $(GAME_SRC)/player.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB

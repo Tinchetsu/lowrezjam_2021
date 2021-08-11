@@ -1,10 +1,12 @@
 #include "game.h"
 #include "engine.h"
+#include "Player.h"
 
 static Game game;
 static Font font;
 static Map* map;
 static Vector2* camera;
+static Player* player;
 
 float speed = 0.5f;
 
@@ -23,28 +25,32 @@ void handleInputs() {
     }
 }
 
-void updateGame() {
 
-    handleInputs();
-
+void updatePlayer() {
     if(game.left) {
-        camera->x-=speed;
+        player->x-=speed;
     }
     if(game.right) {
-        camera->x+=speed;
+        player->x+=speed;
     }
     if(game.up) {
-        camera->y-=speed;
+        player->y-=speed;
     }
     if(game.down) {
-        camera->y+=speed;
+        player->y+=speed;
     }
+
+}
+
+void updateGame() {
+    handleInputs();
+    updatePlayer();
 }
 
 void drawGame() {
-    ClearBackground(GRAY);
+    ClearBackground(BLACK);
     drawMap(map, 0, 0, 0, 0, map->width, map->height);
-    
+    player->draw();
 }
 
 Game* initGame() {
@@ -54,7 +60,11 @@ Game* initGame() {
     game.draw = drawGame;
     camera = getCamera();
     font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
-
     map = loadMap("resources/map", LoadTexture("resources/tiles.png"));
+
+    player = getPlayer();
+    player->x = 8.f;
+    player->y = 0.f;
+
     return &game;
 }
