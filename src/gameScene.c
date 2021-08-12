@@ -11,33 +11,48 @@ Game* game;
 
 static Player* player;
 
-float speed = 0.5f;
 
 static void updatePlayer() {
-    if(game->left) { player->x-=speed; }
-    if(game->right) { player->x+=speed; }
-    if(game->up) { player->y-=speed; }
-    if(game->down) { player->y+=speed; }
+    player->update();
 }
 
 static void update() {
     updatePlayer();
 }
 
-static void draw() {
-    ClearBackground(BLACK);
-    //drawMap(map, 0, 0, 0, 0, map->width, map->height);
-    player->draw();
+static Rectangle rectangles[10];
+static CharInfo chars[10];
 
-    // char buffer[255];
-    // sprintf(buffer, "%d", tileCollision);
-    // DrawText(buffer,0,0,0,BLUE);
+static Font createFont() {
+    Image image = LoadImage("resources/minifont.png");
+
+    rectangles[0] = (Rectangle){0, 0, 3, 5};
+    rectangles[1] = (Rectangle){5, 0, 1, 5};
+    for(int i=2; i<10; i++) {
+        rectangles[i] = (Rectangle){4*i, 0, 3, 5};
+    }
+
+    for(int i=0; i<10; i++) {
+        chars[i] = (CharInfo){i+48,0,0,0, ImageFromImage(image, rectangles[i])};
+    }
+
+    Font font = {5,10,0, LoadTextureFromImage(image), rectangles, chars};
+    return font;
+}
+
+
+static void draw() {
+    ClearBackground(GRAY);
+    player->draw();
+    DrawTextEx(game->font,"01233432545889", (Vector2){0,0}, 5, 1, WHITE);
 }
 
 void runGameScene() {
     game = getGame();
     game->update = update;
     game->draw = draw;
+
+    game->font = createFont();
     
     player = getPlayer();
     player->x = 26.f;

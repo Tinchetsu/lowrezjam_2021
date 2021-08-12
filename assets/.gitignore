@@ -1,3 +1,3 @@
 #these are generated with the buildAssets script
 resources/map
-resources/tiles.png
+resources/*.png

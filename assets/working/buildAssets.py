@@ -51,6 +51,7 @@ def exportMap():
 def copyAssets():
     #copy image map tiles
     shutil.copyfile("tiles.png", "../resources/tiles.png")
+    shutil.copyfile("minifont.png", "../resources/minifont.png")
 
 print("Exporting map")
 exportMap()
