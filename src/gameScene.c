@@ -43,24 +43,3 @@ void runGameScene() {
     player->x = 26.f;
     player->y = 50.f;
 }
-
-/*
-Game* initGameOld() {
-    
-    game.width = 64;
-    game.height = 64;
-    game.update = updateGame;
-    game.draw = drawGame;
-    camera = getCamera();
-    texture = LoadTexture("resources/tiles.png");
-    font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
-    map = loadMap("resources/map", texture);
-
-    player = getPlayer();
-    player->x = 26.f;
-    player->y = 50.f;
-    player->texture = texture;
-
-    return &game;
-}
-*/
