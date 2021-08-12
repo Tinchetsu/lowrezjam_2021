@@ -67,7 +67,7 @@ LDLIBS = libraylib.a
 # game objs
 OBJS =  obj/main.o \
         obj/engine.o \
-        obj/game.o \
+        obj/gameScene.o \
         obj/player.o \
 
 
@@ -82,13 +82,13 @@ $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
 # game sources
-obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h $(GAME_SRC)/game.h
+obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h $(GAME_SRC)/gameScene.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/engine.o: $(GAME_SRC)/engine.c $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
-obj/game.o: $(GAME_SRC)/game.c $(GAME_SRC)/game.h $(GAME_SRC)/engine.h
+obj/gameScene.o: $(GAME_SRC)/gameScene.c $(GAME_SRC)/gameScene.h $(GAME_SRC)/engine.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/player.o: $(GAME_SRC)/player.c $(GAME_SRC)/player.h

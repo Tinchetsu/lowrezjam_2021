@@ -29,5 +29,29 @@ void freeMap(Map *map);
 void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h);
 int getMapTile(const Map* map, int x, int y);
 
+//Game, to make easy draw scenes and stuff
+typedef struct Game {
+    //screen sizes
+    int     width;  
+    int     height;
+
+    //game inputs
+    uint8_t up;
+    uint8_t down;
+    uint8_t left;
+    uint8_t right;
+
+    Texture2D texture;
+    Font font;
+
+    void*   pUserData;      //for storing custom stuff
+    void    (*update)();
+    void    (*draw)();
+} Game;
+
+Game* getGame();
+void updateGame();
+void drawGame();
+
 
 #endif

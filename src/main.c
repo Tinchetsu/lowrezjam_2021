@@ -1,6 +1,6 @@
 #include "raylib.h"
 #include "engine.h"
-#include "game.h"
+#include "gameScene.h"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>
@@ -17,17 +17,26 @@ RenderTexture2D target;
 
 static Game* game = 0;
 
+void initGame() {
+    game = getGame();
+    game->width = 64;
+    game->height = 64;
+    game->texture = LoadTexture("resources/tiles.png");
+    game->font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
+    runGameScene();
+}
+
 void UpdateDrawFrame(void) {
-    game->update();
+    updateGame();
 
 #ifdef PLATFORM_WEB
     BeginDrawing();
     ClearBackground(GRAY);    
-    game->draw();
+    drawGame();
     EndDrawing();
 #else
     BeginTextureMode(target);
-    game->draw();
+    drawGame();
     EndTextureMode();
 
     BeginDrawing();
@@ -46,7 +55,7 @@ void UpdateDrawFrame(void) {
 
 int main() {
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-    game = initGame();
+    initGame();
     
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);

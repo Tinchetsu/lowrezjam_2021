@@ -7,6 +7,8 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define CLAMP(x, lower, upper) (MIN((upper), MAX((x), (lower))))
 
+static Game game={};
+
 static Vector2 camera;
 
 Vector2 *getCamera() {
@@ -74,4 +76,32 @@ int getMapTile(const Map* map, int x, int y) {
         tile = (int)map->tiles[x + y * map->width] - 1;
     }
     return tile;
+}
+
+
+void handleInputs() {
+    game.up = IsKeyDown(KEY_UP);
+    game.down = IsKeyDown(KEY_DOWN);
+    game.left = IsKeyDown(KEY_LEFT);
+    game.right = IsKeyDown(KEY_RIGHT);
+    
+    if (IsGamepadAvailable(0)) {
+        game.up = game.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
+        game.down = game.down || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
+        game.left = game.left || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
+        game.right = game.right || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
+    }
+}
+
+void updateGame() {
+    handleInputs();
+    game.update();
+}
+
+void drawGame() {
+    game.draw();
+}
+
+Game* getGame() {
+    return &game;
 }
