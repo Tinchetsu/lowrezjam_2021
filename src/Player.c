@@ -8,5 +8,6 @@ static void draw() {
 
 Player* getPlayer() {
     player.draw = draw;
+    player.gravity = 0.5f;
     return &player;
 }

@@ -1,11 +1,18 @@
 #include "game.h"
 #include "engine.h"
 #include "Player.h"
+#include <stdio.h>
 
 static Game game;
 static Font font;
 static Map* map;
 static Vector2* camera;
+static int tileCollision=-1;
+
+void doStuff() {
+    
+}
+
 static Player* player;
 
 float speed = 0.5f;
@@ -26,20 +33,33 @@ void handleInputs() {
 }
 
 
-void updatePlayer() {
-    if(game.left) {
-        player->x-=speed;
-    }
-    if(game.right) {
-        player->x+=speed;
-    }
-    if(game.up) {
-        player->y-=speed;
-    }
-    if(game.down) {
-        player->y+=speed;
+void updatePlayerPosition() {
+    int checkTileX = (player->x + 4) / 8;
+    int checkTileY = (player->y + 7) / 8;
+
+    tileCollision = getMapTile(map, checkTileX, checkTileY);
+    if(tileCollision>=0) {
+        if((player->y + 8) > checkTileY * 8) {
+            player->y = (checkTileY * 8) - 8;
+        }
     }
 
+    tileCollision = getMapTile(map, (player->x + 4) / 8, (player->y + 7) / 8);
+}
+
+void updatePlayer() {
+    if(game.left) { player->x-=speed; }
+    if(game.right) { player->x+=speed; }
+    if(game.up) { player->y-=speed; }
+    if(game.down) { player->y+=speed; }
+
+    //gravity
+    //player->y += player->gravity;
+
+    //tile collisions
+    tileCollision = getMapTile(map, (player->x + 4) / 8, (player->y + 7) / 8);
+
+    updatePlayerPosition();
 }
 
 void updateGame() {
@@ -51,6 +71,10 @@ void drawGame() {
     ClearBackground(BLACK);
     drawMap(map, 0, 0, 0, 0, map->width, map->height);
     player->draw();
+
+    char buffer[255];
+    sprintf(buffer, "%d", tileCollision);
+    DrawText(buffer,0,0,0,BLUE);
 }
 
 Game* initGame() {
