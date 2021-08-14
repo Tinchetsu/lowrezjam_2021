@@ -66,10 +66,11 @@ LDLIBS = libraylib.a
 
 # game objs
 OBJS =  obj/main.o \
-        obj/engine.o \
+        obj/game.o \
+        obj/tilemap.o \
         obj/gameScene.o \
         obj/player.o \
-        obj/bullet.o \
+        obj/player_bullet.o \
 
 
 # Default target entry
@@ -83,18 +84,21 @@ $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
 # game sources
-obj/main.o: $(GAME_SRC)/main.c $(GAME_SRC)/engine.h $(GAME_SRC)/gameScene.h
+obj/main.o: $(GAME_SRC)/main.c
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
-obj/engine.o: $(GAME_SRC)/engine.c $(GAME_SRC)/engine.h
+obj/game.o: $(GAME_SRC)/game.c $(GAME_SRC)/game.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
-obj/gameScene.o: $(GAME_SRC)/gameScene.c $(GAME_SRC)/gameScene.h $(GAME_SRC)/engine.h
+obj/tilemap.o: $(GAME_SRC)/tilemap.c $(GAME_SRC)/tilemap.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/gameScene.o: $(GAME_SRC)/gameScene.c $(GAME_SRC)/gameScene.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/player.o: $(GAME_SRC)/player.c $(GAME_SRC)/player.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
-obj/bullet.o: $(GAME_SRC)/bullet.c $(GAME_SRC)/bullet.h
+obj/player_bullet.o: $(GAME_SRC)/player_bullet.c $(GAME_SRC)/player_bullet.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 

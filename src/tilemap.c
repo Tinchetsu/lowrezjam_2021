@@ -1,19 +1,11 @@
+#include "tilemap.h"
 #include <stdio.h>
 #include <stdlib.h> 
-#include <math.h>
-#include "engine.h"
+
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define CLAMP(x, lower, upper) (MIN((upper), MAX((x), (lower))))
-
-static Game game={};
-
-static Vector2 camera;
-
-Vector2 *getCamera(void) {
-    return &camera;
-}
 
 Map* loadMap(const char* fileName, Texture2D texture) {
     Map *map = (Map*) malloc(sizeof(Map));
@@ -40,8 +32,8 @@ void freeMap(Map *map) {
 
 void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     int tile;
-    int _x = x + camera.x;
-    int _y = y + camera.y;
+    int _x = x;
+    int _y = y;
     sx = CLAMP(sx, 0, map->width);
     sy = CLAMP(sy, 0, map->height);
 
@@ -63,7 +55,6 @@ void drawMap(const Map *map, int x, int y, int sx, int sy, int w, int h) {
     /*
     char buffer1[255];
     char buffer2[255];
-    sprintf(buffer1, "%d,%d\n%d,%d", camera.x, camera.y, _x, _y);
     sprintf(buffer2, "%d,%d\n%d,%d\n%d,%d", sx,sy, ex,ey,map->width,map->height);
     DrawText(buffer1,0,0,0,BLUE);
     DrawText(buffer2,38,0,0,YELLOW);
@@ -76,33 +67,4 @@ int getMapTile(const Map* map, int x, int y) {
         tile = (int)map->tiles[x + y * map->width] - 1;
     }
     return tile;
-}
-
-
-void handleInputs(void) {
-    game.up = IsKeyDown(KEY_UP);
-    game.down = IsKeyDown(KEY_DOWN);
-    game.left = IsKeyDown(KEY_LEFT);
-    game.right = IsKeyDown(KEY_RIGHT);
-    game.shot = IsKeyDown(KEY_X);
-    
-    if (IsGamepadAvailable(0)) {
-        game.up = game.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
-        game.down = game.down || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_DOWN);
-        game.left = game.left || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_LEFT);
-        game.right = game.right || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_RIGHT);
-    }
-}
-
-void updateGame(void) {
-    handleInputs();
-    game.update();
-}
-
-void drawGame(void) {
-    game.draw();
-}
-
-Game* getGame(void) {
-    return &game;
 }

@@ -1,6 +1,6 @@
-
 #include "player.h"
-#include "bullet.h"
+#include "game.h"
+#include "player_bullet.h"
 #include <stdio.h>
 
 static Player player = {};
@@ -38,7 +38,7 @@ static void shot() {
     if(game->shot) {
         if(shotDelay==0) {
             shotDelay = 5;
-            newBullet(0, player.x+3, player.y);
+            newPlayerBullet(PLAYER_BULLET1, player.x+3, player.y);
         }
     }
     
@@ -54,7 +54,7 @@ static void update() {
 
 static void draw() {
     //DrawRectangle(player.x, player.y, 8, 8, RED);
-    DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){player.x, player.y}, WHITE);
+    DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){(int)player.x, (int)player.y}, WHITE);
 }
 
 Player* getPlayer(void) {

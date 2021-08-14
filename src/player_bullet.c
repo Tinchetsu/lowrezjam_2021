@@ -1,16 +1,15 @@
-#include "bullet.h"
-#include "engine.h"
+#include "player_bullet.h"
+#include "game.h"
 #include "player.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 
-
-#define MAX_BULLETS 3
-
-static Bullet* bullets = 0;
+#define MAX_BULLETS 50
 
 static Game* game;
 static Player* player;
+static Bullet* bullets = 0;
 
 static float speed=2;
 
@@ -23,13 +22,14 @@ static void update1(Bullet* bullet) {
 
 static void draw1(Bullet* bullet) {
     //DrawRectangle(bullet->x, bullet->y, 2, 2, RED);
-    DrawCircle(bullet->x+1, bullet->y+1, 2, BLUE);
+    //DrawCircle(bullet->x+1, bullet->y+1, 2, BLUE);
     DrawTextureRec(game->texture, (Rectangle){16,0,1,6}, (Vector2){bullet->x, bullet->y}, WHITE);
     
 }
 
-void initBullets(void) {
+void initPlayerBullets(void) {
     game = getGame();
+    player = getPlayer();
     bullets = (Bullet*) malloc (MAX_BULLETS * sizeof(Bullet));
     memset(bullets, 0, sizeof(Bullet) * MAX_BULLETS);
 }
@@ -44,20 +44,28 @@ Bullet* getFreeBullet(){
     return bullet;
 }
 
-void newBullet(int type, float x, float y){
+void newPlayerBullet(int type, float x, float y){
     Bullet* bullet = getFreeBullet();
     if(bullet) {
-        bullet->x = x;
-        bullet->y = y;
-        bullet->dx = 0;
-        bullet->dy = -speed;
-        bullet->active = 1;
-        bullet->update = update1;
-        bullet->draw = draw1;
+        switch (type)
+        {
+        case PLAYER_BULLET1:
+            bullet->x = x;
+            bullet->y = y;
+            bullet->dx = 0;
+            bullet->dy = -speed;
+            bullet->active = 1;
+            bullet->update = update1;
+            bullet->draw = draw1;
+            break;
+
+        default:
+            break;
+        }
     }
 }
 
-void updateBullets(void) {
+void updatePlayerBullets(void) {
     for(int i=0; i < MAX_BULLETS; i++) {
         if(bullets[i].active) {
             bullets[i].update(bullets + i);
@@ -65,7 +73,7 @@ void updateBullets(void) {
     }
 }
 
-void drawBullets(void) {
+void drawPlayerBullets(void) {
     for(int i=0; i < MAX_BULLETS; i++) {
         if(bullets[i].active) {
             bullets[i].draw(bullets + i);
@@ -74,6 +82,6 @@ void drawBullets(void) {
 }
 
 
-void freeBullets(void) {
-    
+void freePlayerBullets(void) {
+    free(bullets);
 }
