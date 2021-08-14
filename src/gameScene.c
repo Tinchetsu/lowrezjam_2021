@@ -5,11 +5,22 @@
 #include "player_bullet.h"
 #include "enemy_bullet.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Star {
     float x;
     float y;
+    int z;
 } Star;
+
+#define TOTAL_STARS 50
+static Star stars[TOTAL_STARS];
+
+enum State {
+    GAME_PLAYING = 0,
+    GAME_OVER
+};
+
 
 
 static Game* game;
@@ -48,33 +59,63 @@ static Font createFont() {
     return font;
 }
 
-static void updateBackground(void) {
+static void initBackground(void) {
+    for (int i = 0; i < TOTAL_STARS; i++) {
+        stars[i].x = randomValue(0, 63);
+        stars[i].y = randomValue(0, 63);
+        stars[i].z = randomValue(2, 6);
+    }
 }
 
+static void updateBackground(void) {
+    for (int i = 0; i < TOTAL_STARS; i++) {
+        stars[i].y += stars[i].z * 0.1;
+        if (stars[i].y > 64) {
+            stars[i].x = randomValue(0, 63);
+            stars[i].y = 0;
+        }
+    }
+}
+
+static void drawBackground(void) {
+    for (int i = 0; i < TOTAL_STARS; i++) {
+        int c = ((float)stars[i].z) / 4 * 255;
+        if (stars[i].z == 2) c = 100;
+        if (stars[i].z == 3) c = 140;
+        if (stars[i].z == 4) c = 180;
+        if (stars[i].z == 5) c = 210;
+        if (stars[i].z == 6) c = 250;
+
+        Color color = (Color){ c,c,c,c };
+        DrawPixel(stars[i].x, stars[i].y, color);
+    }
+}
+static int tick = 0;
 static void update() {
+    if (tick % 100 == 0) {
+        spawnEnemy(ENEMY1, randomValue(4, 60), -1 * randomValue(10, 90));
+    }
+    updateBackground();
     updateEnemies();
     updateEnemyBullets();
     updatePlayerBullets();
     player->update();
+    tick++;
 }
 
 static void draw() {
     ClearBackground(BLACK);
+    drawBackground();
     drawPlayerBullets();
     player->draw();
     drawEnemies();
     drawEnemyBullets();
 
-    EBullet *eb = getEnemyBulletPool();
-    int used = 0;
-    for (int i = 0; i < EBULLETS_POOL_SIZE; i++) {
-        if (eb[i].active) {
-            used++;
-        }
-    }
-    //char buffer[128];
-    //sprintf(buffer, "used %d", used);
-    //DrawText(buffer, 0, 0, 8, WHITE);
+    char text[128];
+    sprintf(text, "%d", game->score);
+    DrawTextEx(game->font, text, (Vector2) { 2, 2 }, 5, 1, GRAY);
+    DrawTextEx(game->font, text, (Vector2) { 1, 1 }, 5, 1, WHITE);
+    
 }
 
 void setGameScene(void) {
@@ -84,6 +125,7 @@ void setGameScene(void) {
 
     game->font = createFont();
     
+    initBackground();
     initPlayerBullets();
     initEnemies();
     initEnemyBullets();
@@ -92,6 +134,9 @@ void setGameScene(void) {
     player->x = 26.f;
     player->y = 50.f;
 
+    //for (int i = 0; i < 10; i++) {
+        //spawnEnemy(ENEMY1, random(4, 60), -1 * random(10, 90));
+    //}
 
-    spawnEnemy(ENEMY1, 32, 10);
+    spawnPlayer();
 }

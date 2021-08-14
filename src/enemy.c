@@ -9,6 +9,7 @@ static Rectangle sprites[] = { {240,240,7,7}, {248,240,7,7}, {232,248,3,3} };
 static Game* game;
 #define HIT_TIME 3
 
+//---------------------------------------------------------------------------------------------
 void updateEnemy1(Enemy* enemy) {
 
     if (enemy->hitTime > 0) {
@@ -23,30 +24,43 @@ void updateEnemy1(Enemy* enemy) {
     };
 
     // check collision with player
-    if (collisionPointRect((int)game->player->x, (int)game->player->y, bbox)) {
+    if (game->player->invulTime==0 &&
+        collisionPointRect((int)game->player->x, (int)game->player->y, bbox)) {
         enemy->hitTime = HIT_TIME;
+        enemy->live--;
+        spawnPlayer();
     }
 
     // check collision with player bullets
-    for (int i = 0; i < PBULLETS_POOL_SIZE; i++) {
-        PBullet* bullet = game->pBullets + i;
-        if (bullet->active) {
-            if (collisionPointRect((int)bullet->x, (int)bullet->y, bbox)) {
-                bullet->active = 0;
-                //enemy->live--;
-                enemy->hitTime = HIT_TIME;
+    if (enemy->y >= 0) {
+        for (int i = 0; i < PBULLETS_POOL_SIZE; i++) {
+            PBullet* bullet = game->pBullets + i;
+            if (bullet->active) {
+                if (collisionPointRect((int)bullet->x, (int)bullet->y, bbox)) {
+                    bullet->active = 0;
+                    enemy->live--;
+                    enemy->hitTime = HIT_TIME;
+                    game->score += enemy->score;
+                }
             }
         }
     }
 
-    if (enemy->live <= 0) {
+    if (enemy->y >= 70) {
         enemy->active = 0;
     }
 
-    if (enemy->tick % 10 == 0) {
-        spawnEnemyBullet(ENEMY_BULLET1, enemy->x+3, enemy->y+3, 1);
+    if (enemy->live <= 0) {
+        game->score += 500;
+        enemy->active = 0;
     }
 
+    if (enemy->y >= 0 && enemy->tick % 50 == 0) {
+        spawnEnemyBullet(ENEMY_BULLET2, enemy->x+3, enemy->y+3, 1);
+    }
+
+    enemy->y += 0.25;
+    
     enemy->tick++;
 }
 
@@ -65,9 +79,10 @@ void spawnEnemy1(Enemy* enemy, float x, float y) {
     enemy->sprite = 0;
     enemy->update = updateEnemy1;
     enemy->draw = drawEnemy1;
-    enemy->score = 50;
+    enemy->score = 5;
     enemy->boxes[0] = (Rectangle) {1, 1, 5, 5};
 }
+//---------------------------------------------------------------------------------------------
 
 void updateEnemies() {
     for (int i = 0; i < ENEMY_POOL_SIZE; i++) {

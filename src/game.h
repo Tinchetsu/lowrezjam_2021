@@ -29,6 +29,8 @@ typedef struct Game {
     PBullet* pBullets;
     Enemy* enemies;
 
+    uint32_t score;
+
     void    (*update)(void);
     void    (*draw)(void);
 } Game;
@@ -40,6 +42,7 @@ void drawGame(void);
 
 int collisionPointRect(float x, float y, Rectangle rec);
 int collisionPointCircles(float x, float y, float cx, float cy, float r);
+int randomValue(int lower, int upper);
 
 
 #endif

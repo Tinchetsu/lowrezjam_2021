@@ -19,6 +19,10 @@ int collisionPointCircles(float x, float y, float cx, float cy, float r) {
     return d < r * r;
 }
 
+int randomValue(int lower, int upper) {
+    return (rand() % (upper - lower + 1)) + lower;
+}
+
 void handleInputs(void) {
     game.up = IsKeyDown(KEY_UP);
     game.down = IsKeyDown(KEY_DOWN);

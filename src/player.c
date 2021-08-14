@@ -48,20 +48,54 @@ static void shot() {
 }
 
 static void update() {
-    move();
-    shot();
+    if (player.state == PLAYER_SPAWN) {
+        player.y -= 0.25;
+        if (player.y <= 50) {
+            player.state = PLAYER_PLAY;
+        }
+    }
+    if (player.state == PLAYER_PLAY) {
+        move();
+        shot();
+    }
+    if (player.invulTime > 0) {
+        player.invulTime--;
+    }
+    player.tick++;
 }
 
 static void draw() {
-    DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){(int)player.x-3, (int)player.y-4}, WHITE);
-    DrawPixel((int)player.x + 8, (int)player.y - 8, WHITE);
-    //DrawRectangle(player.x, player.y, 8, 8, (Color) { 255, 255, 255, 128 });
+    static colorIndex = 0;
+
+    if (player.invulTime > 0) {
+        if(player.invulTime%2==0)
+            DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2) { (int)player.x - 3, (int)player.y - 4 }, WHITE);
+    }
+    else {
+        DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2) { (int)player.x - 3, (int)player.y - 4 }, WHITE);
+    }
+    if (player.tick % 5 == 0) {
+        colorIndex = !colorIndex;
+        player.pixel = colorIndex ? RED : YELLOW;
+    }
+    DrawPixel((int)player.x, (int)player.y, player.pixel);
 }
 
 Player* getPlayer(void) {
     game = getGame();
+    player.alive = 1;
+    player.lives = 1;
     player.level = 0;
     player.update = update;
     player.draw = draw;
+    player.pixel = RED;
     return &player;
+}
+
+
+void spawnPlayer() {
+    player.x = 32;
+    player.y = 70;
+    player.invulTime = 200;
+    player.state = PLAYER_SPAWN;
 }
