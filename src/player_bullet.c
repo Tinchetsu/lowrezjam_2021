@@ -21,17 +21,14 @@ static void update1(Bullet* bullet) {
 }
 
 static void draw1(Bullet* bullet) {
-    //DrawRectangle(bullet->x, bullet->y, 2, 2, RED);
     //DrawCircle(bullet->x+1, bullet->y+1, 2, BLUE);
-    DrawTextureRec(game->texture, (Rectangle){16,0,1,6}, (Vector2){bullet->x, bullet->y}, WHITE);
-    
+    DrawTextureRec(game->texture, (Rectangle){16,0,1,6}, (Vector2){(int)bullet->x, (int)bullet->y}, WHITE);
 }
 
 void initPlayerBullets(void) {
     game = getGame();
     player = getPlayer();
-    bullets = (Bullet*) malloc (MAX_BULLETS * sizeof(Bullet));
-    memset(bullets, 0, sizeof(Bullet) * MAX_BULLETS);
+    bullets = (Bullet*) calloc (MAX_BULLETS , sizeof(Bullet));
 }
 
 Bullet* getFreeBullet(){
@@ -80,7 +77,6 @@ void drawPlayerBullets(void) {
         }
     }
 }
-
 
 void freePlayerBullets(void) {
     free(bullets);

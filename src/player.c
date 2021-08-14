@@ -38,7 +38,7 @@ static void shot() {
     if(game->shot) {
         if(shotDelay==0) {
             shotDelay = 5;
-            newPlayerBullet(PLAYER_BULLET1, player.x+3, player.y);
+            newPlayerBullet(PLAYER_BULLET1, player.x, player.y-2);
         }
     }
     
@@ -53,8 +53,8 @@ static void update() {
 }
 
 static void draw() {
-    //DrawRectangle(player.x, player.y, 8, 8, RED);
-    DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){(int)player.x, (int)player.y}, WHITE);
+    DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){(int)player.x-3, (int)player.y-4}, WHITE);
+    //DrawRectangle(player.x, player.y, 8, 8, (Color) { 255, 255, 255, 128 });
 }
 
 Player* getPlayer(void) {

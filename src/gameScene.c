@@ -53,8 +53,9 @@ static void update() {
 
 static void draw() {
     ClearBackground(BLACK);
-    drawPlayerBullets();
+    
     player->draw();
+    drawPlayerBullets();
 }
 
 void setGameScene(void) {

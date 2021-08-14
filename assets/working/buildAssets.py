@@ -15,7 +15,7 @@ import os, struct, shutil
 import xml.etree.ElementTree as ET
 
 inFile = "map.tmx"
-outFile = "../resources/map"
+outFile = "map"
 
 def writeFile():
     pass
@@ -50,8 +50,14 @@ def exportMap():
 
 def copyAssets():
     #copy image map tiles
+    shutil.copyfile("map", "../resources/map")
     shutil.copyfile("tiles.png", "../resources/tiles.png")
     shutil.copyfile("minifont.png", "../resources/minifont.png")
+
+    #for vscode2019.
+    #shutil.copyfile("map", "../../vs2019/Game/map")
+    #shutil.copyfile("tiles.png", "../../vs2019/Game/tiles.png")
+    #shutil.copyfile("minifont.png", "../../vs2019/Game/minifont.png")
 
 print("Exporting map")
 exportMap()
