@@ -69,6 +69,7 @@ OBJS =  obj/main.o \
         obj/engine.o \
         obj/gameScene.o \
         obj/player.o \
+        obj/bullet.o \
 
 
 # Default target entry
@@ -77,7 +78,7 @@ all: $(PROJECT_NAME)
 BUILD_CFLAGS = $(CFLAGS) -s USE_GLFW=3 -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 
 BUILD_CFLAGS += --shell-file template.html 
 #BUILD_CFLAGS += --shell-file $(RAYLIB_PATH)/src/shell.html
-BUILD_CFLAGS += --preload-file ../assets/resources@/resources
+BUILD_CFLAGS += --preload-file ../assets/resources@/
 $(PROJECT_NAME): $(OBJS)
 	$(CC) -o build/$(PROJECT_NAME).html $(OBJS) $(BUILD_CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -DPLATFORM_WEB
 
@@ -93,3 +94,7 @@ obj/gameScene.o: $(GAME_SRC)/gameScene.c $(GAME_SRC)/gameScene.h $(GAME_SRC)/eng
 
 obj/player.o: $(GAME_SRC)/player.c $(GAME_SRC)/player.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/bullet.o: $(GAME_SRC)/bullet.c $(GAME_SRC)/bullet.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+

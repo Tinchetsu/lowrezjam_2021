@@ -8,10 +8,10 @@ typedef struct Player {
     float y;
     float dx;
     float dy;
-    void  (*draw)();
-    void  (*update)();
+    void  (*draw)(void);
+    void  (*update)(void);
 } Player;
 
-Player* getPlayer();
+Player* getPlayer(void);
 
 #endif

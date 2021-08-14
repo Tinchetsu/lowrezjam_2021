@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include "raylib.h"
 
-Vector2 *getCamera();
+Vector2 *getCamera(void);
 
 // Tile map
 
@@ -40,18 +40,19 @@ typedef struct Game {
     uint8_t down;
     uint8_t left;
     uint8_t right;
+    uint8_t shot;
 
     Texture2D texture;
     Font font;
 
     void*   pUserData;      //for storing custom stuff
-    void    (*update)();
-    void    (*draw)();
+    void    (*update)(void);
+    void    (*draw)(void);
 } Game;
 
-Game* getGame();
-void updateGame();
-void drawGame();
+Game* getGame(void);
+void updateGame(void);
+void drawGame(void);
 
 
 #endif

@@ -17,13 +17,13 @@ RenderTexture2D target;
 
 static Game* game = 0;
 
-void initGame() {
+void initGame(void) {
     game = getGame();
     game->width = 64;
     game->height = 64;
-    game->texture = LoadTexture("resources/tiles.png");
-    game->font = LoadFontEx("resources/tic-computer-6x6-font.ttf", 6, 0, 0);
-    runGameScene();
+    game->texture = LoadTexture("tiles.png");
+    game->font = LoadFontEx("tic-computer-6x6-font.ttf", 6, 0, 0);
+    setGameScene();
 }
 
 void UpdateDrawFrame(void) {

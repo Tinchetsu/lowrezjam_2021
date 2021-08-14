@@ -1,6 +1,7 @@
 #include "gameScene.h"
 #include "engine.h"
-#include "Player.h"
+#include "player.h"
+#include "bullet.h"
 #include <stdio.h>
 
 
@@ -11,20 +12,11 @@ Game* game;
 
 static Player* player;
 
-
-static void updatePlayer() {
-    player->update();
-}
-
-static void update() {
-    updatePlayer();
-}
-
 static Rectangle rectangles[10];
 static CharInfo chars[10];
 
 static Font createFont() {
-    Image image = LoadImage("resources/minifont.png");
+    Image image = LoadImage("minifont.png");
 
     rectangles[0] = (Rectangle){0, 0, 3, 5};
     rectangles[1] = (Rectangle){5, 0, 1, 5};
@@ -40,19 +32,32 @@ static Font createFont() {
     return font;
 }
 
-
-static void draw() {
-    ClearBackground(GRAY);
-    player->draw();
-    DrawTextEx(game->font,"01233432545889", (Vector2){0,0}, 5, 1, WHITE);
+static void updatePlayer() {
+    
+    player->update();
 }
 
-void runGameScene() {
+static void update() {
+    updateBullets();
+    updatePlayer();
+}
+
+static void draw() {
+    ClearBackground(BLACK);
+    drawBullets();
+    player->draw();
+    
+    DrawTextEx(game->font,"0123456789", (Vector2){0,0}, 5, 1, WHITE);
+}
+
+void setGameScene(void) {
     game = getGame();
     game->update = update;
     game->draw = draw;
 
     game->font = createFont();
+    
+    initBullets();
     
     player = getPlayer();
     player->x = 26.f;

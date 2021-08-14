@@ -1,11 +1,15 @@
 
-#include "Player.h"
+#include "player.h"
+#include "bullet.h"
+#include <stdio.h>
 
 static Player player = {};
 static Game *game;
 static float speed = 0.5f;
-static Rectangle sprites[3] = {{8,24,8,8},{16,24,8,8},{16,24,-7,8}};
+static Rectangle sprites[3] = {{0,0,8,8},{8,0,8,8},{8,0,-7,8}};
 static int sprite = 0;
+
+int shotDelay = 0;
 
 static void move() {
     player.dx = 0;
@@ -29,9 +33,23 @@ static void move() {
     player.y += player.dy;
 }
 
+static void shot() {
+    
+    if(game->shot) {
+        if(shotDelay==0) {
+            shotDelay = 5;
+            newBullet(0, player.x+3, player.y);
+        }
+    }
+    
+    shotDelay--;
+    if(shotDelay < 0)
+        shotDelay = 0;
+}
 
 static void update() {
     move();
+    shot();
 }
 
 static void draw() {
@@ -39,7 +57,7 @@ static void draw() {
     DrawTextureRec(getGame()->texture, sprites[sprite], (Vector2){player.x, player.y}, WHITE);
 }
 
-Player* getPlayer() {
+Player* getPlayer(void) {
     game = getGame();
     player.update = update;
     player.draw = draw;

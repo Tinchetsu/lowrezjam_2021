@@ -11,7 +11,7 @@ static Game game={};
 
 static Vector2 camera;
 
-Vector2 *getCamera() {
+Vector2 *getCamera(void) {
     return &camera;
 }
 
@@ -79,11 +79,12 @@ int getMapTile(const Map* map, int x, int y) {
 }
 
 
-void handleInputs() {
+void handleInputs(void) {
     game.up = IsKeyDown(KEY_UP);
     game.down = IsKeyDown(KEY_DOWN);
     game.left = IsKeyDown(KEY_LEFT);
     game.right = IsKeyDown(KEY_RIGHT);
+    game.shot = IsKeyDown(KEY_X);
     
     if (IsGamepadAvailable(0)) {
         game.up = game.up || IsGamepadButtonDown(0, GAMEPAD_BUTTON_LEFT_FACE_UP);
@@ -93,15 +94,15 @@ void handleInputs() {
     }
 }
 
-void updateGame() {
+void updateGame(void) {
     handleInputs();
     game.update();
 }
 
-void drawGame() {
+void drawGame(void) {
     game.draw();
 }
 
-Game* getGame() {
+Game* getGame(void) {
     return &game;
 }
