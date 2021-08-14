@@ -6,6 +6,7 @@ typedef struct Player {
     float y;
     float dx;
     float dy;
+    int level;
     void  (*draw)(void);
     void  (*update)(void);
 } Player;

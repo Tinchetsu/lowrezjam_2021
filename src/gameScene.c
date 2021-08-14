@@ -1,11 +1,18 @@
 #include "gameScene.h"
 #include "game.h"
 #include "player.h"
+#include "enemy.h"
 #include "player_bullet.h"
+#include "enemy_bullet.h"
 #include <stdio.h>
 
+typedef struct Star {
+    float x;
+    float y;
+} Star;
 
-Game* game;
+
+static Game* game;
 // static Map* map;
 // static Vector2* camera;
 // static int tileCollision=-1;
@@ -41,21 +48,33 @@ static Font createFont() {
     return font;
 }
 
-static void updatePlayer() {
-    
-    player->update();
+static void updateBackground(void) {
 }
 
 static void update() {
+    updateEnemies();
+    updateEnemyBullets();
     updatePlayerBullets();
-    updatePlayer();
+    player->update();
 }
 
 static void draw() {
     ClearBackground(BLACK);
-    
-    player->draw();
     drawPlayerBullets();
+    player->draw();
+    drawEnemies();
+    drawEnemyBullets();
+
+    EBullet *eb = getEnemyBulletPool();
+    int used = 0;
+    for (int i = 0; i < EBULLETS_POOL_SIZE; i++) {
+        if (eb[i].active) {
+            used++;
+        }
+    }
+    //char buffer[128];
+    //sprintf(buffer, "used %d", used);
+    //DrawText(buffer, 0, 0, 8, WHITE);
 }
 
 void setGameScene(void) {
@@ -66,8 +85,13 @@ void setGameScene(void) {
     game->font = createFont();
     
     initPlayerBullets();
+    initEnemies();
+    initEnemyBullets();
     
     player = getPlayer();
     player->x = 26.f;
     player->y = 50.f;
+
+
+    spawnEnemy(ENEMY1, 32, 10);
 }

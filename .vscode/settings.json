@@ -11,16 +11,16 @@
         "reloadButton":"$(refresh)",
         "commands": [
             {
-                "cwd": "${workspaceFolder}/assets/working",
-                "name": "export map",
-                "color": "lightgreen",
-                "command": "python buildAssets.py"
-            },
-            {
                 "cwd": "${workspaceFolder}/wasm/build",
                 "name": "zip",
                 "color": "lightgreen",
                 "command": "7z a game.zip game.data game.html game.js game.wasm && 7z rn game.zip game.html index.html"
+            },
+            {
+                "cwd": "${workspaceFolder}/assets/working",
+                "name": "build assets",
+                "color": "lightgreen",
+                "command": "python buildAssets.py"
             },
             {
                 "cwd": "${workspaceFolder}/wasm",

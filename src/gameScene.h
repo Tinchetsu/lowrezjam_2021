@@ -1,7 +1,5 @@
-#ifndef __GAME_H__
-#define __GAME_H__
-
-#include <stdint.h>
+#ifndef __GAMESCENE_H__
+#define __GAMESCENE_H__
 
 void setGameScene(void);
 

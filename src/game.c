@@ -2,9 +2,22 @@
 #include <stdlib.h> 
 #include <math.h>
 #include "game.h"
+#include "enemy.h"
 
 
 static Game game;
+
+int collisionPointRect(float x, float y, Rectangle rec)
+{
+    return (x >= rec.x) && (x < (rec.x + rec.width)) && (y >= rec.y) && (y < (rec.y + rec.height));
+}
+
+int collisionPointCircles(float x, float y, float cx, float cy, float r) {
+    float dx = cx - x;
+    float dy = cy - y;
+    float d = dx * dx + dy * dy;
+    return d < r * r;
+}
 
 void handleInputs(void) {
     game.up = IsKeyDown(KEY_UP);
@@ -34,9 +47,15 @@ void initGame() {
     game.width = 64;
     game.height = 64;
     game.texture = LoadTexture("tiles.png");
+    game.player = getPlayer();
+    game.pBullets = getPlayerBulletPool();
+    game.enemies = getEnemyPool();
 }
-
 
 Game* getGame(void) {
     return &game;
 }
+
+
+
+

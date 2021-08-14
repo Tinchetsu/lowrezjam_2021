@@ -1,13 +1,13 @@
 
-// My render engine, inspired by pico8, tic80, etc
-// The idea is to have simple commands for draw tilemap, 
-// sprites, etc, similar to those fantasy consoles.
-
-#ifndef __ENGINE_H__
-#define __ENGINE_H__
+#ifndef __GAME_H__
+#define __GAME_H__
 
 #include <stdint.h>
 #include "raylib.h"
+#include "player.h"
+#include "player_bullet.h"
+#include "enemy.h"
+
 
 //Game, to make easy draw scenes and stuff
 typedef struct Game {
@@ -25,7 +25,10 @@ typedef struct Game {
     Texture2D texture;
     Font font;
 
-    void*   pUserData;      //for storing custom stuff
+    Player* player;
+    PBullet* pBullets;
+    Enemy* enemies;
+
     void    (*update)(void);
     void    (*draw)(void);
 } Game;
@@ -34,6 +37,9 @@ void initGame();
 Game* getGame(void);
 void updateGame(void);
 void drawGame(void);
+
+int collisionPointRect(float x, float y, Rectangle rec);
+int collisionPointCircles(float x, float y, float cx, float cy, float r);
 
 
 #endif

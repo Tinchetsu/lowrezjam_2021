@@ -55,9 +55,9 @@ def copyAssets():
     shutil.copyfile("minifont.png", "../resources/minifont.png")
 
     #for vscode2019.
-    #shutil.copyfile("map", "../../vs2019/Game/map")
-    #shutil.copyfile("tiles.png", "../../vs2019/Game/tiles.png")
-    #shutil.copyfile("minifont.png", "../../vs2019/Game/minifont.png")
+    shutil.copyfile("map", "../../vs2019/Game/map")
+    shutil.copyfile("tiles.png", "../../vs2019/Game/tiles.png")
+    shutil.copyfile("minifont.png", "../../vs2019/Game/minifont.png")
 
 print("Exporting map")
 exportMap()

@@ -71,6 +71,8 @@ OBJS =  obj/main.o \
         obj/gameScene.o \
         obj/player.o \
         obj/player_bullet.o \
+        obj/enemy_bullet.o \
+        obj/enemy.o \
 
 
 # Default target entry
@@ -100,5 +102,11 @@ obj/player.o: $(GAME_SRC)/player.c $(GAME_SRC)/player.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
 obj/player_bullet.o: $(GAME_SRC)/player_bullet.c $(GAME_SRC)/player_bullet.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/enemy_bullet.o: $(GAME_SRC)/enemy_bullet.c $(GAME_SRC)/enemy_bullet.h
+	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
+
+obj/enemy.o: $(GAME_SRC)/enemy.c $(GAME_SRC)/enemy.h
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -DPLATFORM_WEB
 
