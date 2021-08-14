@@ -33,7 +33,6 @@ static Font createFont() {
     rectangles[14] = (Rectangle){57, 0, 1, 5}; // .
     rectangles[17] = (Rectangle){69, 0, 1, 5}; // 1
     
-
     for(int i=0; i<TOTAL_CHARS; i++) {
         chars[i] = (CharInfo){i+32,0,0,0, ImageFromImage(image, rectangles[i])};
     }

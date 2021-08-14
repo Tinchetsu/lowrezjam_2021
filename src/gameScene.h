@@ -3,11 +3,6 @@
 
 #include <stdint.h>
 
-typedef struct SceneData {
-    
-} SceneData;
-
-
 void setGameScene(void);
 
 #endif

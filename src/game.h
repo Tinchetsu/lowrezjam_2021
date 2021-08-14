@@ -30,6 +30,7 @@ typedef struct Game {
     void    (*draw)(void);
 } Game;
 
+void initGame();
 Game* getGame(void);
 void updateGame(void);
 void drawGame(void);

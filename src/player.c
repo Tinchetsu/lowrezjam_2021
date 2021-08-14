@@ -3,7 +3,7 @@
 #include "player_bullet.h"
 #include <stdio.h>
 
-static Player player = {};
+static Player player;
 static Game *game;
 static float speed = 0.5f;
 static Rectangle sprites[3] = {{0,0,8,8},{8,0,8,8},{8,0,-7,8}};

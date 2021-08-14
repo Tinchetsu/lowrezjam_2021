@@ -4,7 +4,7 @@
 #include "game.h"
 
 
-static Game game={};
+static Game game;
 
 void handleInputs(void) {
     game.up = IsKeyDown(KEY_UP);
@@ -29,6 +29,13 @@ void updateGame(void) {
 void drawGame(void) {
     game.draw();
 }
+
+void initGame() {
+    game.width = 64;
+    game.height = 64;
+    game.texture = LoadTexture("tiles.png");
+}
+
 
 Game* getGame(void) {
     return &game;

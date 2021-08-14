@@ -17,12 +17,9 @@ RenderTexture2D target;
 
 static Game* game = 0;
 
-void initGame(void) {
+void init(void) {
+    initGame();
     game = getGame();
-    game->width = 64;
-    game->height = 64;
-    game->texture = LoadTexture("tiles.png");
-    game->font = LoadFontEx("tic-computer-6x6-font.ttf", 6, 0, 0);
     setGameScene();
 }
 
@@ -55,7 +52,7 @@ void UpdateDrawFrame(void) {
 
 int main() {
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-    initGame();
+    init();
     
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
