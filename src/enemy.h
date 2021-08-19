@@ -26,10 +26,10 @@ typedef struct Enemy {
 	void  (*update)(struct Enemy*);
 } Enemy;
 
-Enemy* getEnemyPool();
-void initEnemies();
-void updateEnemies();
-void drawEnemies();
+Enemy* getEnemyPool(void);
+void initEnemies(void);
+void updateEnemies(void);
+void drawEnemies(void);
 void spawnEnemy(int type, float x, float y);
 
 #endif

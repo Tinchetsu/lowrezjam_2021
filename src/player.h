@@ -27,6 +27,6 @@ typedef struct Player {
 
 Player* getPlayer(void);
 
-void spawnPlayer();
+void spawnPlayer(void);
 
 #endif

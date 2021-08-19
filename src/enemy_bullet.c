@@ -68,7 +68,7 @@ static void spawnEBullet1(float x, float y, float speed) {
 
 //************************************************************************************************************
 
-static spawnEBullet2_1(float x, float y, float angle) {
+static void spawnEBullet2_1(float x, float y, float angle) {
     EBullet* bullet = getFreeBullet();
     if (bullet) {
         game = getGame();

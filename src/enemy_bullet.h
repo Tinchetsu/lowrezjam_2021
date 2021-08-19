@@ -40,13 +40,13 @@ typedef struct EBullet {
 } EBullet;
 
 
-EBullet* getEnemyBulletPool();
+EBullet* getEnemyBulletPool(void);
 void initEnemyBullets(void);
 void updateEnemyBullets(void);
 void drawEnemyBullets(void);
 void spawnEnemyBullet(int type, float x, float y, float speed);
 
-Rectangle* eBulletSprites();
+Rectangle* eBulletSprites(void);
 
 
 #endif

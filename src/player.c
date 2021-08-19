@@ -65,7 +65,7 @@ static void update() {
 }
 
 static void draw() {
-    static colorIndex = 0;
+    static int colorIndex = 0;
 
     if (player.invulTime > 0) {
         if(player.invulTime%2==0)

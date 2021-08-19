@@ -4,10 +4,10 @@
 
 #include <stdint.h>
 #include "raylib.h"
+#include "scene.h"
 #include "player.h"
 #include "player_bullet.h"
 #include "enemy.h"
-
 
 //Game, to make easy draw scenes and stuff
 typedef struct Game {
@@ -28,17 +28,23 @@ typedef struct Game {
     Player* player;
     PBullet* pBullets;
     Enemy* enemies;
-
+    Scene*  scene;          //current scene
+    
     uint32_t score;
 
-    void    (*update)(void);
-    void    (*draw)(void);
+    void*   pUserData;      //for storing custom stuff
+    
+    
+    
+    void    (*init)(void);
+    void    (*run)(void);
 } Game;
 
-void initGame();
+
 Game* getGame(void);
-void updateGame(void);
-void drawGame(void);
+int getDeviceScreenWidth(void);
+int getDeviceScreenHeight(void);
+
 
 int collisionPointRect(float x, float y, Rectangle rec);
 int collisionPointCircles(float x, float y, float cx, float cy, float r);

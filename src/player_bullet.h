@@ -23,11 +23,11 @@ typedef struct PBullet {
     void  (*draw)(struct PBullet*);
 } PBullet;
 
-PBullet* getPlayerBulletPool();
+PBullet* getPlayerBulletPool(void);
 void initPlayerBullets(void);
 void updatePlayerBullets(void);
 void drawPlayerBullets(void);
 void spawnPlayerBullet(int type, float x, float y);
-Rectangle* pBulletSprites();
+Rectangle* pBulletSprites(void);
 
 #endif

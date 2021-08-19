@@ -1,4 +1,5 @@
 #include "gameScene.h"
+#include "scene.h"
 #include "game.h"
 #include "player.h"
 #include "enemy.h"
@@ -24,11 +25,9 @@ enum State {
 
 
 static Game* game;
-// static Map* map;
-// static Vector2* camera;
-// static int tileCollision=-1;
-
 static Player* player;
+
+static Scene gameScene;
 
 #define TOTAL_CHARS 26
 
@@ -118,10 +117,17 @@ static void draw() {
     
 }
 
+static void dispose() {
+    
+}
+
 void setGameScene(void) {
     game = getGame();
-    game->update = update;
-    game->draw = draw;
+    
+    gameScene.update = update;
+    gameScene.draw = draw;
+    gameScene.dispose = dispose;
+    game->scene = &gameScene;
 
     game->font = createFont();
     

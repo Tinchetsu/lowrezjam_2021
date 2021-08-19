@@ -84,7 +84,7 @@ void spawnEnemy1(Enemy* enemy, float x, float y) {
 }
 //---------------------------------------------------------------------------------------------
 
-void updateEnemies() {
+void updateEnemies(void) {
     for (int i = 0; i < ENEMY_POOL_SIZE; i++) {
         if (enemyPool[i].active) {
             enemyPool[i].update(enemyPool + i);
@@ -92,7 +92,7 @@ void updateEnemies() {
     }
 }
 
-void drawEnemies() {
+void drawEnemies(void) {
     for (int i = 0; i < ENEMY_POOL_SIZE; i++) {
         if (enemyPool[i].active) {
             enemyPool[i].draw(enemyPool + i);
@@ -100,7 +100,7 @@ void drawEnemies() {
     }
 }
 
-Enemy* getFreeEnemy() {
+Enemy* getFreeEnemy(void) {
     Enemy* enemy = 0;
     for (int i = 0; i < ENEMY_POOL_SIZE; i++) {
         if (!enemyPool[i].active) {
@@ -112,11 +112,11 @@ Enemy* getFreeEnemy() {
 }
 
 
-Enemy* getEnemyPool() {
+Enemy* getEnemyPool(void) {
     return enemyPool;
 }
 
-void initEnemies() {
+void initEnemies(void) {
     game = getGame();
     memset(enemyPool, 0, sizeof(Enemy) * ENEMY_POOL_SIZE);
 }
